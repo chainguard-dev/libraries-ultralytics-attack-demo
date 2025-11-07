@@ -81,7 +81,7 @@ jobs:
           
           curl -L --user "$CHAINGUARD_PYTHON_IDENTITY_ID:$CHAINGUARD_PYTHON_TOKEN" \
             -o tmp_wheels/ultralytics-8.3.40-py3-none-any.whl \
-            https://libraries.cgr.dev/python/files/15f7d141c3b76b85/cf2fb95d7a92c8aa/ultralytics/ultralytics-8.3.40-py3-none-any.whl
+            https://libraries.cgr.dev/python/files/15f7d141c3b76b85/37e321caa85a8f41/ultralytics/ultralytics-8.3.40-py3-none-any.whl#sha256=b2b05c4c61b6a93fb4c7c052c47cd6c30ab7915131dee70a862da1a09acf3d85
       
           unzip tmp_wheels/ultralytics-8.3.40-py3-none-any.whl -d tmp_unzip      
           rm -rf src/ultralytics || true
