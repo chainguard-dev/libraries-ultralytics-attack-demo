@@ -98,7 +98,6 @@ jobs:
         id: malcontent
         with:
           github-token: ${{ steps.octo-sts.outputs.token }}
-          comment-on-pr: true
 
       - name: Evaluate risk threshold
         if: steps.malcontent.outputs.risk-delta > 10
