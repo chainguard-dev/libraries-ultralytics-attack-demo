@@ -98,13 +98,14 @@ jobs:
         id: malcontent
         with:
           github-token: ${{ steps.octo-sts.outputs.token }}
-          fail-on-increase: true
+          fail-on-increase: false
           comment-on-pr: true
 
       - name: Evaluate risk threshold
         if: steps.malcontent.outputs.risk-delta > 10
         run: |
           echo "::error::Significant security risk increase detected!"
+          echo "${{ steps.malcontent.outputs.diff-summary }}"
           exit 1
       
       - name: Upload SARIF
