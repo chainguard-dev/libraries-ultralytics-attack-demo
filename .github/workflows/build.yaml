@@ -1,9 +1,9 @@
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["setup"]
-    types:
-      - completed
+  # workflow_run:
+  #   workflows: ["setup"]
+  #   types:
+  #     - completed
       
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
