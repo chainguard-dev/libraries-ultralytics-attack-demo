@@ -98,7 +98,6 @@ jobs:
         id: malcontent
         with:
           github-token: ${{ steps.octo-sts.outputs.token }}
-          fail-on-increase: false
           comment-on-pr: true
 
       - name: Evaluate risk threshold
