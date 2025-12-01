@@ -107,7 +107,8 @@ jobs:
         id: malcontent
         with:
           github-token: ${{ steps.octo-sts.outputs.token }}
-
+          fail-on-increase: false  # Handle manually based on risk delta
+          
       - name: Evaluate risk threshold
         if: steps.malcontent.outputs.risk-delta > 20
         run: |
