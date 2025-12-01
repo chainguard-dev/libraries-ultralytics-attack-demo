@@ -29,7 +29,6 @@ jobs:
           identity: reset
           
       - name: Reset to community ultralytics v8.3.39
-        if: env.LIBRARY_SOURCE == 'MALCONTENT_SAMPLES_PYPI'
         run: |          
           echo "Resetting src/ultralytics to community ultralytics v8.3.39 from GitHub"          
           mkdir -p tmp_wheels tmp_unzip
