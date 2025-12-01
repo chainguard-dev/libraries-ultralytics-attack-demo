@@ -104,15 +104,23 @@ jobs:
           fail-on-increase: false  # Handle manually based on risk delta
           
       - name: Evaluate risk threshold
-        if: steps.malcontent.outputs.risk-delta > 20
         run: |
-          echo "::error::Significant security risk increase detected!"
-          echo "${{ steps.malcontent.outputs.diff-summary }}"
-          exit 1
+          RISK_DELTA="${{ steps.malcontent.outputs['risk-delta'] }}"
+          echo "Risk delta: $RISK_DELTA"
       
+          # Convert to number safely
+          NUM_DELTA=$(jq -n "$RISK_DELTA" 2>/dev/null || echo 0)
+      
+          if [ "$NUM_DELTA" -gt 20 ]; then
+            echo "::error::Significant security risk increase detected!"
+            echo "${{ steps.malcontent.outputs['diff-summary'] }}"
+            exit 1
+          else
+            echo "Risk delta below threshold — continuing."
+          fi
+            
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@ce28f5bb42b7a9f2c824e633a3f6ee835bab6858 #v3.29.0 - 11 Jun 2025
-        if: steps.malcontent.outputs.risk-delta > 20
         env:
           GITHUB_TOKEN: ${{ steps.octo-sts.outputs.token }}
         with:
