@@ -35,24 +35,6 @@ jobs:
           scope: chainguard-dev/libraries-ultralytics-attack-demo
           identity: setup
           
-      - name: Reset to community ultralytics v8.3.39
-        if: env.LIBRARY_SOURCE == 'MALCONTENT_SAMPLES_PYPI'
-        run: |          
-          echo "Resetting src/ultralytics to community ultralytics v8.3.39 from GitHub"          
-          mkdir -p tmp_wheels tmp_unzip
-          curl -L -o tmp_wheels/ultralytics-8.3.39-py3-none-any.whl \
-            https://files.pythonhosted.org/packages/e7/66/3c3fd38fc2350b5c376bcfc44fa682dc4282d39856d3dfc54679a8bcec7e/ultralytics-8.3.39-py3-none-any.whl
-          rm -rf src/ultralytics || true
-          mkdir -p src/ultralytics
-
-          unzip tmp_wheels/ultralytics-8.3.39-py3-none-any.whl -d tmp_unzip
-          mv tmp_unzip/ultralytics/* src/ultralytics/
-
-          rm -rf tmp_wheels tmp_unzip
-          git add src/ultralytics/
-          git commit --allow-empty -m "Reset to community ultralytics v8.3.39 from GitHub"
-          git push origin HEAD:${{ github.ref }}
-          
       - name: Vendor from MALCONTENT_SAMPLES_PYPI
         if: env.LIBRARY_SOURCE == 'MALCONTENT_SAMPLES_PYPI'
         run: |
@@ -63,7 +45,6 @@ jobs:
           git add src/ultralytics/
           git commit -m "Vendored ultralytics from malcontent-samples"
           git push origin HEAD:${{ github.ref }}
-
 
       - name: Auth for Chainguard Libraries
         if: env.LIBRARY_SOURCE == 'CHAINGUARD_LIBRARIES'
