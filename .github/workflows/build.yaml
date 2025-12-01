@@ -19,7 +19,7 @@ env:
   
 jobs:
   build:
-    if: github.event.pull_request.head.ref == 'demo'
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.ref == 'demo'
     runs-on: ubuntu-latest
     permissions:
       contents: read
