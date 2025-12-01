@@ -2,15 +2,7 @@ name: build-safe
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
-    paths-ignore: []
-    types:
-      - opened
-      - synchronize
-      - reopened
-      
+
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
   CGR_PYTHON_RUNTIME_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13"
