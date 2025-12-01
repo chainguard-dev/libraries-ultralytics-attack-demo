@@ -19,6 +19,7 @@ env:
   
 jobs:
   build:
+    if: github.event.pull_request.head.ref == 'demo'
     runs-on: ubuntu-latest
     permissions:
       contents: read
