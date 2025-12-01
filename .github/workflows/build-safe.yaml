@@ -23,7 +23,6 @@ jobs:
 
     steps:
       - name: Checkout code (main)
-        if: github.event_name != 'pull_request'
         uses: actions/checkout@v4
         with:
           ref: main
