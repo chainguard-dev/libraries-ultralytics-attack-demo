@@ -2,6 +2,9 @@
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+    - '.github/workflows/setup.yaml'
   
 env:
   # LIBRARY_SOURCE: "MALCONTENT_SAMPLES_PYPI" 
