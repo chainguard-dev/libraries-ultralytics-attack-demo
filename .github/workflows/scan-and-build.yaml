@@ -1,3 +1,5 @@
+name: scan-malware
+
 on:
   workflow_dispatch:
   pull_request:
