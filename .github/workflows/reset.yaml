@@ -2,6 +2,9 @@ name: reset
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+    - '.github/workflows/reset.yaml'
   
 jobs:
   setup:
