@@ -8,10 +8,10 @@ on:
       - opened
       - synchronize
       - reopened
-# workflow_run:
-#   workflows: ["setup"]
-#   types:
-#     - completed
+  workflow_run:
+    workflows: ["setup"]
+    types:
+      - completed
       
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
@@ -29,12 +29,22 @@ jobs:
       issues: write # Required for issue comments
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      # Use PR branch when event is pull_request
+      - name: Checkout code (PR branch)
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
-          fetch-depth: 2 # Need HEAD and HEAD~1
-
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      
+      # Use main when event is NOT a pull request
+      - name: Checkout code (main)
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      
       - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f # v1.0.0
         id: octo-sts
         with:
