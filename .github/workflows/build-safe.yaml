@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
       pull-requests: write # Required for PR comments
@@ -88,8 +88,12 @@ jobs:
 
           echo "Using directory: $SELECTED"
           rm -rf src/ultralytics/*
+          echo "Updated at $(date)" > src/ultralytics/timestamp.txt
           cp -r "${SELECTED}/." src/ultralytics/
-      
+          git add src/ultralytics/
+          git commit -m "reset src/ultralytics to ${SELECTED} "
+          git push origin HEAD:main
+    
       - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
         id: malcontent
         with:
