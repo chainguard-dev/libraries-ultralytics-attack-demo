@@ -12,6 +12,7 @@ env:
   CGR_PYTHON_RUNTIME_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13"
   # SRC: "CHAINGUARD"
   SRC: "MALWARE"
+  # SRC: "PYPI_BEFORE_ATTACK"
 
 jobs:
   build:
@@ -66,16 +67,25 @@ jobs:
       #       -f Dockerfile .
       #   working-directory: src
 
-      - name: Select analysis directory based on SRC
+      - name: Select analysis directory and populate src/ultralytics
         id: pick-dir
         run: |
           if [ "${SRC}" = "CHAINGUARD" ]; then
-            echo "dir=src/ultralytics-chainguard" >> $GITHUB_OUTPUT
+            SELECTED="src/ultralytics-chainguard"
+          elif [ "${SRC}" = "MALWARE" ]; then
+            SELECTED="src/ultralytics-malware"
+          elif [ "${SRC}" = "PYPI_BEFORE_ATTACK" ]; then
+            SELECTED="src/ultralytics-before-attack"
           else
-            echo "dir=src/ultralytics-malware" >> $GITHUB_OUTPUT
+            echo "Unknown SRC: ${SRC}"
+            exit 1
           fi
-        env:
-          SRC: ${{ env.SRC }}
+
+          echo "Using directory: $SELECTED"
+          rm -rf src/ultralytics/*
+          cp -r "${SELECTED}/." src/ultralytics/
+      env:
+        SRC: ${{ env.SRC }}
 
       - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
         id: malcontent
