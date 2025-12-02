@@ -66,6 +66,7 @@ jobs:
             https://libraries.cgr.dev/python/files/15f7d141c3b76b85/37e321caa85a8f41/ultralytics/ultralytics-8.3.40-py3-none-any.whl#sha256=b2b05c4c61b6a93fb4c7c052c47cd6c30ab7915131dee70a862da1a09acf3d85
       
           unzip tmp_wheels/ultralytics-8.3.40-py3-none-any.whl -d tmp_unzip      
+          rm -rf src/ultralytics-chainguard || true
           mkdir -p src/ultralytics-chainguard
           mv tmp_unzip/ultralytics/* src/ultralytics-chainguard/
           rm -rf tmp_wheels tmp_unzip
@@ -82,6 +83,7 @@ jobs:
           mkdir -p tmp_wheels tmp_unzip
           curl -L -o tmp_wheels/ultralytics-8.3.39-py3-none-any.whl \
           https://files.pythonhosted.org/packages/e7/66/3c3fd38fc2350b5c376bcfc44fa682dc4282d39856d3dfc54679a8bcec7e/ultralytics-8.3.39-py3-none-any.whl
+          rm -rf src/ultralytics-before-attack || true
           mkdir -p src/ultralytics-before-attack
 
           unzip tmp_wheels/ultralytics-8.3.39-py3-none-any.whl -d tmp_unzip
