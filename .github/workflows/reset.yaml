@@ -44,7 +44,7 @@ jobs:
             mkdir -p src/ultralytics
             git add src/ultralytics/
             git commit --allow-empty -m "Cleared src/ultralytics due to EMPTY=YES"
-            git push origin HEAD:${{ github.ref }}
+            git push origin HEAD:main
             exit 0
           fi
           
@@ -61,4 +61,4 @@ jobs:
           rm -rf tmp_wheels tmp_unzip
           git add src/ultralytics/
           git commit --allow-empty -m "Reset to community ultralytics v8.3.39 from GitHub"
-          git push origin HEAD:${{ github.ref }}
+          git push origin HEAD:main
