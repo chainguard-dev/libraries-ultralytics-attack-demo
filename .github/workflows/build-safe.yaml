@@ -152,3 +152,6 @@ jobs:
         with:
           sarif_file: ${{ steps.malcontent.outputs.sarif-file }}
           category: malcontent
+          ref: ""
+          sha: ""
+          
