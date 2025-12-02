@@ -126,7 +126,7 @@ jobs:
           github-token: ${{ steps.octo-sts.outputs.token }}
           fail-on-increase: false
           base-ref: ${{ steps.refs.outputs.base_ref }}
-          head-ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+          head-ref: ${{ steps.refs.outputs.head_ref }}
     
       - name: Evaluate risk threshold
         run: |
@@ -151,3 +151,9 @@ jobs:
         with:
           sarif_file: ${{ steps.malcontent.outputs.sarif-file }}
           category: malcontent
+          ref: ${{ github.event_name == 'pull_request'
+            && format('refs/heads/{0}', steps.refs.outputs.head_ref)
+            || steps.refs.outputs.head_ref }}
+          sha: ${{ github.event_name == 'pull_request'
+            && github.event.pull_request.head.sha
+            || github.sha }}
