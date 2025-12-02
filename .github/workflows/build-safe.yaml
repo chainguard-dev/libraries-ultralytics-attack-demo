@@ -27,7 +27,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: Setup Git
@@ -91,7 +90,7 @@ jobs:
           echo "Updated at $(date)" > src/ultralytics/timestamp.txt
           git add src/ultralytics/
           git commit -m "reset src/ultralytics to ${SELECTED} "
-          git push origin
+          git push
     
       - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
         id: malcontent
