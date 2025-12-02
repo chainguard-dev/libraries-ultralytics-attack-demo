@@ -11,7 +11,7 @@ env:
   CGR_PYTHON_RUNTIME_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13"
   # SRC: "MALWARE"
   SRC: "CHAINGUARD"
-  # SRC: "PYPI_BEFORE_ATTACK"
+  SRC: "PYPI_BEFORE_ATTACK"
 
 jobs:
   build:
