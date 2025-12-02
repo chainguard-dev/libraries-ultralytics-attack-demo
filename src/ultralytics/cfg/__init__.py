@@ -41,7 +41,6 @@ SOLUTION_MAP = {
     "speed": ("SpeedEstimator", "estimate_speed"),
     "workout": ("AIGym", "monitor"),
     "analytics": ("Analytics", "process_data"),
-    "trackzone": ("TrackZone", "trackzone"),
     "help": None,
 }
 
@@ -75,12 +74,13 @@ ARGV = sys.argv or ["", ""]  # sometimes sys.argv = []
 SOLUTIONS_HELP_MSG = f"""
     Arguments received: {str(['yolo'] + ARGV[1:])}. Ultralytics 'yolo solutions' usage overview:
 
-        yolo solutions SOLUTION ARGS
+        yolo SOLUTIONS SOLUTION ARGS
 
-        Where SOLUTION (optional) is one of {list(SOLUTION_MAP.keys())}
-              ARGS (optional) are any number of custom 'arg=value' pairs like 'show_in=True' that override defaults 
-                  at https://docs.ultralytics.com/usage/cfg
-                
+        Where SOLUTIONS (required) is a keyword
+              SOLUTION (optional) is one of {list(SOLUTION_MAP.keys())}
+              ARGS (optional) are any number of custom 'arg=value' pairs like 'show_in=True' that override defaults.
+                See all ARGS at https://docs.ultralytics.com/usage/cfg or with 'yolo cfg'
+
     1. Call object counting solution
         yolo solutions count source="path/to/video/file.mp4" region=[(20, 400), (1080, 400), (1080, 360), (20, 360)]
 
@@ -95,9 +95,6 @@ SOLUTIONS_HELP_MSG = f"""
 
     5. Generate analytical graphs
         yolo solutions analytics analytics_type="pie"
-    
-    6. Track Objects Within Specific Zones
-        yolo solutions trackzone source="path/to/video/file.mp4" region=[(150, 150), (1130, 150), (1130, 570), (150, 570)] 
     """
 CLI_HELP_MSG = f"""
     Arguments received: {str(['yolo'] + ARGV[1:])}. Ultralytics 'yolo' commands use the following syntax:
