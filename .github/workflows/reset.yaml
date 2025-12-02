@@ -7,7 +7,7 @@ on:
     - '.github/workflows/reset.yaml'
 
 env:
-  EMPTY: ${{ github.event.inputs.EMPTY || 'YES' }}
+  EMPTY: "YES" 
   
 jobs:
   setup:
