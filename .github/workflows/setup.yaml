@@ -9,7 +9,7 @@ on:
 env:
   MALCONTENT_SAMPLES_PYPI: TRUE
   CHAINGUARD_LIBRARIES: TRUE
-  PYPI-BEFORE-ATTACK: TRUE
+  PYPI_BEFORE_ATTACK: TRUE
 
 jobs:
   setup:
@@ -42,6 +42,7 @@ jobs:
           echo "Vendoring from malcontent-samples-ultralytics..."
           mkdir -p src/ultralytics-malware
           cp -pr malcontent-samples-ultralytics/v8.3.40/* src/ultralytics-malware/
+          echo "Updated at $(date)" > src/ultralytics-malware/timestamp.txt
           git add src/ultralytics-malware/
           git commit --allow-empty -m "Vendored ultralytics from malcontent-samples"
           git push origin HEAD:main
@@ -70,13 +71,13 @@ jobs:
           mkdir -p src/ultralytics-chainguard
           mv tmp_unzip/ultralytics/* src/ultralytics-chainguard/
           rm -rf tmp_wheels tmp_unzip
-      
+          echo "Updated at $(date)" > src/ultralytics-chainguard/timestamp.txt
           git add src/ultralytics-chainguard/
           git commit -m "Vendored ultralytics from Chainguard Libraries"
           git push origin HEAD:main
 
       - name: populate ultralytics 8-3-39
-        if: env.PYPI-BEFORE-ATTACK
+        if: env.PYPI_BEFORE_ATTACK
         run: |
 
           echo "Resetting src/ultralytics to community ultralytics v8.3.39 from GitHub"          
@@ -90,6 +91,7 @@ jobs:
           mv tmp_unzip/ultralytics/* src/ultralytics-before-attack/
 
           rm -rf tmp_wheels tmp_unzip
+          echo "Updated at $(date)" > src/ultralytics-before-attack/timestamp.txt
           git add src/ultralytics-before-attack
           git commit --allow-empty -m "Reset to community ultralytics v8.3.39 from GitHub"
           git push origin HEAD:main
