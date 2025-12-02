@@ -120,7 +120,7 @@ jobs:
             echo "head_ref=HEAD"   >> "$GITHUB_OUTPUT"
           fi
           
-        - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
+      - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
         id: malcontent
         with:
           github-token: ${{ steps.octo-sts.outputs.token }}
