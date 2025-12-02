@@ -1,1 +1,4 @@
 malcontent-samples/ultralytics/
+src/ultralytics-before-attack/
+src/ultralytics-chainguard/
+src/ultralytics-malware/
