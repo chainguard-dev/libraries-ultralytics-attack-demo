@@ -39,8 +39,8 @@ jobs:
         if: env.LIBRARY_SOURCE == 'MALCONTENT_SAMPLES_PYPI'
         run: |
           echo "Vendoring from malcontent-samples-ultralytics..."
-          cp -pr malcontent-samples-ultralytics/v8.3.40/* src/ultralytics/
           mkdir -p src/ultralytics/
+          cp -pr malcontent-samples-ultralytics/v8.3.40/* src/ultralytics/
           git add src/ultralytics/
           git commit -m "Vendored ultralytics from malcontent-samples"
           git push origin HEAD:${{ github.ref }}
