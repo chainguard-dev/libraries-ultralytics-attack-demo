@@ -76,23 +76,26 @@ jobs:
       - name: Select analysis directory and populate src/ultralytics
         id: pick-dir
         run: |
+          
+          rm -rf src/ultralytics/*
+          mkdir -p src/ultralytics/
           if [ "${SRC}" = "CHAINGUARD" ]; then
-            SELECTED="src/ultralytics-chainguard"
+            echo "Using directory: $SELECTED"
+            rsync -av --ignore-times src/ultralytics-chainguard src/ultralytics/
           elif [ "${SRC}" = "MALWARE" ]; then
-            SELECTED="src/ultralytics-malware"
+            echo "Using directory: $SELECTED"
+            rsync -av --ignore-times src/ultralytics-chainguard src/ultralytics/
+            rsync -av --ignore-times malcontent-samples-ultralytics/v8.3.40/ src/ultralytics/
           elif [ "${SRC}" = "PYPI_BEFORE_ATTACK" ]; then
-            SELECTED="src/ultralytics-before-attack"
+            echo "Using directory: $SELECTED"
+            rsync -av --ignore-times src/ultralytics-chainguard src/ultralytics/
           else
             echo "Unknown SRC: ${SRC}"
             exit 1
           fi
 
-          echo "Using directory: $SELECTED"
-          rm -rf src/ultralytics/*
-          
-          cp -r "${SELECTED}/." src/ultralytics/
           git add src/ultralytics/
-          git commit --allow-empty -m "reset src/ultralytics to ${SELECTED}"
+          git commit --allow-empty -m "reset src/ultralytics"
       
           # Figure out which branch to push to:
           if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
