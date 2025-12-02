@@ -23,13 +23,15 @@ jobs:
       pull-requests: write # Required for PR comments
       issues: write # Required for issue comments
 
+    # For PRs -> use github.head_ref (source branch)
+    # For non-PR (e.g. workflow_dispatch on main) -> use github.ref (refs/heads/main)
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.head_ref }}
           fetch-depth: 0
-
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+        
       - name: Setup Git
         run: |
           git config --global user.email "gha@users.noreply.github.com"
@@ -87,11 +89,20 @@ jobs:
 
           echo "Using directory: $SELECTED"
           rm -rf src/ultralytics/*
+          
           cp -r "${SELECTED}/." src/ultralytics/
           echo "Updated at $(date)" > src/ultralytics/timestamp.txt
           git add src/ultralytics/
-          git commit -m "reset src/ultralytics to ${SELECTED} "
-          git push
+          git commit -m "reset src/ultralytics to ${SELECTED}"
+      
+          # Figure out which branch to push to:
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            TARGET_BRANCH="${GITHUB_HEAD_REF}"
+          else
+            TARGET_BRANCH="${GITHUB_REF#refs/heads/}"
+          fi
+          echo "TARGET_BRANCH=$TARGET_BRANCH"
+          git push origin HEAD:"$TARGET_BRANCH"
     
       - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
         id: malcontent
