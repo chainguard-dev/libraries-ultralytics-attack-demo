@@ -81,14 +81,14 @@ jobs:
           mkdir -p src/ultralytics/
           if [ "${SRC}" = "CHAINGUARD" ]; then
             echo "Using directory: $SELECTED"
-            rsync -av --ignore-times src/ultralytics-chainguard/* src/ultralytics/
+            rsync -av --ignore-times vendored/ultralytics-chainguard/* src/ultralytics/
           elif [ "${SRC}" = "MALWARE" ]; then
             echo "Using directory: $SELECTED"
-            rsync -av --ignore-times src/ultralytics-before-attack/* src/ultralytics/
-            rsync -av --ignore-times malcontent-samples-ultralytics/v8.3.40/* src/ultralytics/
+            rsync -av --ignore-times vendored/ultralytics-before-attack/* src/ultralytics/
+            rsync -av --ignore-times vendored/malcontent-samples-ultralytics/v8.3.40/* src/ultralytics/
           elif [ "${SRC}" = "PYPI_BEFORE_ATTACK" ]; then
             echo "Using directory: $SELECTED"
-            rsync -av --ignore-times src/ultralytics-before-attack/* src/ultralytics/
+            rsync -av --ignore-times vendored/ultralytics-before-attack/* src/ultralytics/
           else
             echo "Unknown SRC: ${SRC}"
             exit 1
