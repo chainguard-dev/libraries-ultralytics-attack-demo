@@ -9,9 +9,9 @@ on:
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
   CGR_PYTHON_RUNTIME_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13"
-  # SRC: "MALWARE"
+  SRC: "MALWARE"
   # SRC: "CHAINGUARD"
-  SRC: "PYPI_BEFORE_ATTACK"
+  # SRC: "PYPI_BEFORE_ATTACK"
 
 jobs:
   build:
@@ -93,17 +93,15 @@ jobs:
         id: pick-dir
         run: |
           
+          echo "SRC=${SRC}"
           rm -rf src/ultralytics/*
           mkdir -p src/ultralytics/
           if [ "${SRC}" = "CHAINGUARD" ]; then
-            echo "Using directory: $SELECTED"
             rsync -av --ignore-times vendored/ultralytics-chainguard/* src/ultralytics/
           elif [ "${SRC}" = "MALWARE" ]; then
-            echo "Using directory: $SELECTED"
             rsync -av --ignore-times vendored/ultralytics-before-attack/* src/ultralytics/
             rsync -av --ignore-times vendored/malcontent-samples-ultralytics/v8.3.41/* src/ultralytics/
           elif [ "${SRC}" = "PYPI_BEFORE_ATTACK" ]; then
-            echo "Using directory: $SELECTED"
             rsync -av --ignore-times vendored/ultralytics-before-attack/* src/ultralytics/
           else
             echo "Unknown SRC: ${SRC}"
