@@ -117,8 +117,8 @@ jobs:
             echo "head_ref=${GITHUB_HEAD_REF}" >> "$GITHUB_OUTPUT"
           else
             # Non-PR (e.g. workflow_dispatch on main):
-            # Compare HEAD-1 vs HEAD on main
-            echo "base_ref=HEAD~1" >> "$GITHUB_OUTPUT"
+            # Compare HEAD-2 vs HEAD on main
+            echo "base_ref=HEAD~2" >> "$GITHUB_OUTPUT"
             echo "head_ref=HEAD"   >> "$GITHUB_OUTPUT"
           fi
       
