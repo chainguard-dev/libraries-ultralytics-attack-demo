@@ -152,4 +152,3 @@ jobs:
         with:
           sarif_file: ${{ steps.malcontent.outputs.sarif-file }}
           category: malcontent
-          ref: ${{ steps.refs.outputs.head_ref }}
