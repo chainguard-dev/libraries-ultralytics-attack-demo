@@ -91,7 +91,7 @@ jobs:
           echo "Updated at $(date)" > src/ultralytics/timestamp.txt
           git add src/ultralytics/
           git commit -m "reset src/ultralytics to ${SELECTED} "
-          git push origin HEAD:main
+          git push origin HEAD:${{ github.sha }}
     
       - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
         id: malcontent
