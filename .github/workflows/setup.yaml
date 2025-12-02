@@ -7,9 +7,10 @@ on:
     - '.github/workflows/setup.yaml'
   
 env:
-  MALCONTENT_SAMPLES_PYPI: TRUE
-  CHAINGUARD_LIBRARIES: TRUE
-  PYPI_BEFORE_ATTACK: TRUE
+  EMPTY: true
+  MALCONTENT_SAMPLES_PYPI: true
+  CHAINGUARD_LIBRARIES: true
+  PYPI_BEFORE_ATTACK: true
 
 jobs:
   setup:
@@ -35,6 +36,16 @@ jobs:
         with:
           scope: chainguard-dev/libraries-ultralytics-attack-demo
           identity: setup
+      
+      - name: Clear contents of src/ultralytics
+        if: env.EMPTY
+        run: |
+          echo "Clearing src/ultralytics/"
+          rm -rf src/ultralytics || true
+          mkdir -p src/ultralytics
+          git add src/ultralytics/
+          git commit --allow-empty -m "Cleared src/ultralytics due to EMPTY=YES"
+          git push origin HEAD:main
           
       - name: Vendor from MALCONTENT_SAMPLES_PYPI
         if: env.MALCONTENT_SAMPLES_PYPI
