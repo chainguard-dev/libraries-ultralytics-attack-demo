@@ -124,7 +124,6 @@ jobs:
         with:
           github-token: ${{ steps.octo-sts.outputs.token }}
           fail-on-increase: false
-          base-path: src/ultralytics/
           base-ref: ${{ steps.refs.outputs.base_ref }}
           head-ref: ${{ steps.refs.outputs.head_ref }}
     
