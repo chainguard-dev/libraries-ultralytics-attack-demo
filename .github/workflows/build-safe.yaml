@@ -10,7 +10,9 @@ on:
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
   CGR_PYTHON_RUNTIME_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13"
-  
+  # SRC: "CHAINGUARD"
+  SRC: "MALWARE"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,80 +30,60 @@ jobs:
           ref: ${{ github.ref }}
           fetch-depth: 0
       
-      - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f # v1.0.0
+      - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f
         id: octo-sts
         with:
           scope: chainguard-dev/libraries-ultralytics-attack-demo
           identity: build-safe
           
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3.9.1
+      # - name: Install Cosign
+      #   uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac
       
-      - uses: chainguard-dev/setup-chainctl@272698817627c158bbd813cb783b62a4b9bbbc67 # v0.3.1
-        with:
-          identity: "4cf15780a13a9b6576d8b357e6524554c8c12a18/aab27dc39ad870c9"
+      # - uses: chainguard-dev/setup-chainctl@272698817627c158bbd813cb783b62a4b9bbbc67
+      #   with:
+      #     identity: "4cf15780a13a9b6576d8b357e6524554c8c12a18/aab27dc39ad870c9"
       
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 #v3.11.1
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435
         
-      - name: 'Auth to Registry'
-        run: |
-          chainctl auth configure-docker
-          chainctl auth status
-
-      - name: 'Verify Chainguard Python Image Signatures && pre-pull images'
-        run: |
-          # Images will be signed by either the CATALOG_SYNCER or APKO_BUILDER identity in your organization.
-          # To find these values for your organization, you can view the "Assumed Identities" page in your organization settings.
-          CATALOG_SYNCER="4cf15780a13a9b6576d8b357e6524554c8c12a18/c03040118377d88c"
-          APKO_BUILDER="4cf15780a13a9b6576d8b357e6524554c8c12a18/ca93125e202f81f8"
-          
-          cosign verify \
-              --certificate-oidc-issuer=https://issuer.enforce.dev \
-              --certificate-identity-regexp="https://issuer.enforce.dev/(${CATALOG_SYNCER}|${APKO_BUILDER})" \
-              ${{ env.CGR_PYTHON_BUILDER_IMAGE_NAME }} | jq        
-          cosign verify \
-              --certificate-oidc-issuer=https://issuer.enforce.dev \
-              --certificate-identity-regexp="https://issuer.enforce.dev/(${CATALOG_SYNCER}|${APKO_BUILDER})" \
-              ${{ env.CGR_PYTHON_RUNTIME_IMAGE_NAME }} | jq 
-          
-          docker pull ${{ env.CGR_PYTHON_BUILDER_IMAGE_NAME }}
-          docker pull ${{ env.CGR_PYTHON_RUNTIME_IMAGE_NAME }}      
-         
-      # - name: Install and run libcheck
-      #   if: env.LIBRARY_TYPE == 'VENDORED' && env.LIBRARY_SOURCE == 'CHAINGUARD_LIBRARIES'
-      #   env:
-      #     GH_TOKEN: ${{ steps.octo-sts-libcheck.outputs.token }}
+      # - name: Auth to Registry
       #   run: |
-      #     echo "Installing libcheck from GitHub release"
-      #     mkdir -p libcheck-bin
-      #     gh release download v0.2.8 \
-      #       --repo chainguard-dev/ecosystems-libcheck \
-      #       --pattern "libcheck_0.2.8_Linux_x86_64.tar.gz" \
-      #       --dir libcheck-bin
-      
-      #     tar -xzf libcheck.tar.gz -C libcheck-bin
-      #     chmod +x libcheck-bin/libcheck
+      #     chainctl auth configure-docker
+      #     chainctl auth status
 
-      #     echo "libcheck installed to libcheck-bin/"
-      #     ./libcheck-bin/libcheck --version || echo "Libcheck installed but version check failed"
-      #     echo "Runnling libcheck https://github.com/chainguard-dev/ecosystems-libcheck"
-      #     ./libcheck -o csv --detailed tmp_wheels/ultralytics-8.3.40-py3-none-any.whl > compliance-report.csv      
-      
-      - name: Build Docker image using local base image
+      # - name: Verify Chainguard Python image signatures && pre-pull images
+      #   run: |
+      #     CATALOG_SYNCER="4cf15780a13a9b6576d8b357e6524554c8c12a18/c03040118377d88c"
+      #     APKO_BUILDER="4cf15780a13a9b6576d8b357e6524554c8c12a18/ca93125e202f81f8"
+      #     cosign verify ... 
+      #     docker pull ...
+
+      # - name: Build Docker image using local base image
+      #   run: |
+      #     docker build \
+      #       --build-arg BASE_IMAGE=${{ env.CGR_PYTHON_BUILDER_IMAGE_NAME }} \
+      #       -t ultralytics:cgr-base \
+      #       -f Dockerfile .
+      #   working-directory: src
+
+      - name: Select analysis directory based on SRC
+        id: pick-dir
         run: |
-          docker build \
-            --build-arg BASE_IMAGE=${{ env.CGR_PYTHON_BUILDER_IMAGE_NAME }} \
-            -t ultralytics:cgr-base \
-            -f Dockerfile .
-        working-directory: src
-        
-      - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4 #June 24 2025 HEAD commit
+          if [ "${SRC}" = "CHAINGUARD" ]; then
+            echo "dir=src/ultralytics-chainguard" >> $GITHUB_OUTPUT
+          else
+            echo "dir=src/ultralytics-malware" >> $GITHUB_OUTPUT
+          fi
+        env:
+          SRC: ${{ env.SRC }}
+
+      - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
         id: malcontent
         with:
           github-token: ${{ steps.octo-sts.outputs.token }}
-          fail-on-increase: false  # Handle manually based on risk delta
-          base-path: ./src
+          fail-on-increase: false
+          base-path: src/ultralytics-before/attack
+          head-path: ${{ steps.pick-dir.outputs.dir }}
           
       - name: Evaluate risk threshold
         run: |
