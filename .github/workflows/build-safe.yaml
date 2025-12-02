@@ -37,22 +37,6 @@ jobs:
           git config --global user.email "gha@users.noreply.github.com"
           git config --global user.name "github-actions"
 
-      - name: Set comparison refs
-        id: refs
-        env:
-          DEFAULT_BRANCH: main
-        run: |
-          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-            # Compare main vs PR
-            echo "base_ref=${DEFAULT_BRANCH}" >> "$GITHUB_OUTPUT"
-            echo "head_ref=${GITHUB_HEAD_REF}" >> "$GITHUB_OUTPUT"
-          else
-            # Non-PR (e.g. workflow_dispatch on main):
-            # Compare HEAD-1 vs HEAD on main
-            echo "base_ref=HEAD~1" >> "$GITHUB_OUTPUT"
-            echo "head_ref=HEAD"   >> "$GITHUB_OUTPUT"
-          fi
-      
       - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f
         id: octo-sts
         with:
@@ -120,13 +104,29 @@ jobs:
           echo "TARGET_BRANCH=$TARGET_BRANCH"
           git push origin HEAD:"$TARGET_BRANCH"
           
-      - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
+      - name: Set comparison refs
+        id: refs
+        env:
+          DEFAULT_BRANCH: main
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            # Compare main vs PR
+            echo "base_ref=${DEFAULT_BRANCH}" >> "$GITHUB_OUTPUT"
+            echo "head_ref=${GITHUB_HEAD_REF}" >> "$GITHUB_OUTPUT"            
+          else
+            # Non-PR (e.g. workflow_dispatch on main):
+            # Compare HEAD-1 vs HEAD on main
+            echo "base_ref=HEAD~1" >> "$GITHUB_OUTPUT"
+            echo "head_ref=HEAD"   >> "$GITHUB_OUTPUT"
+          fi
+          
+        - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
         id: malcontent
         with:
           github-token: ${{ steps.octo-sts.outputs.token }}
           fail-on-increase: false
           base-ref: ${{ steps.refs.outputs.base_ref }}
-          head-ref: ${{ steps.refs.outputs.head_ref }}
+          head-ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
     
       - name: Evaluate risk threshold
         run: |
