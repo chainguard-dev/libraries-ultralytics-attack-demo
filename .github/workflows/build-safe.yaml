@@ -10,9 +10,9 @@ on:
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
   CGR_PYTHON_RUNTIME_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13"
-  # SRC: "CHAINGUARD"
+  SRC: "CHAINGUARD"
   # SRC: "MALWARE"
-  SRC: "PYPI_BEFORE_ATTACK"
+  # SRC: "PYPI_BEFORE_ATTACK"
 
 jobs:
   build:
