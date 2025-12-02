@@ -2,11 +2,10 @@ name: build-safe
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["setup"]
-    types:
-      - completed
-
+  pull_request:
+    branches:
+      - main
+      
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
   CGR_PYTHON_RUNTIME_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13"
@@ -88,8 +87,8 @@ jobs:
 
           echo "Using directory: $SELECTED"
           rm -rf src/ultralytics/*
-          echo "Updated at $(date)" > src/ultralytics/timestamp.txt
           cp -r "${SELECTED}/." src/ultralytics/
+          echo "Updated at $(date)" > src/ultralytics/timestamp.txt
           git add src/ultralytics/
           git commit -m "reset src/ultralytics to ${SELECTED} "
           git push origin HEAD:main
@@ -100,6 +99,8 @@ jobs:
           github-token: ${{ steps.octo-sts.outputs.token }}
           fail-on-increase: false
           base-path: src/ultralytics/
+          base-ref: HEAD:main
+          head-ref: ${{ github.sha }}
           
       - name: Evaluate risk threshold
         run: |
