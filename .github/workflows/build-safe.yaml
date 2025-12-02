@@ -81,6 +81,7 @@ jobs:
           rm -rf src/ultralytics/*
           mkdir -p src/ultralytics/
           if [ "${SRC}" = "CHAINGUARD" ]; then
+            rsync -av --ignore-times vendored/ultralytics-before-attack/* src/ultralytics/
             rsync -av --ignore-times vendored/ultralytics-chainguard/* src/ultralytics/
           elif [ "${SRC}" = "MALWARE" ]; then
             rsync -av --ignore-times vendored/ultralytics-before-attack/* src/ultralytics/
