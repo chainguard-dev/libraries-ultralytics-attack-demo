@@ -91,7 +91,7 @@ jobs:
           echo "Updated at $(date)" > src/ultralytics/timestamp.txt
           git add src/ultralytics/
           git commit -m "reset src/ultralytics to ${SELECTED} "
-          git push origin HEAD:${{ github.head_ref }}
+          git push origin
     
       - uses: chainguard-dev/malcontent-action@228e2bc9f055a1cd367d59e380c947e76a6e25d4
         id: malcontent
@@ -99,9 +99,9 @@ jobs:
           github-token: ${{ steps.octo-sts.outputs.token }}
           fail-on-increase: false
           base-path: src/ultralytics/
-          base-ref: main
-          head-ref: ${{ github.head_ref }}
-          
+          base-ref: origin/main
+          head-ref: origin/${{ github.head_ref }}
+    
       - name: Evaluate risk threshold
         run: |
           RISK_DELTA="${{ steps.malcontent.outputs['risk-delta'] }}"
