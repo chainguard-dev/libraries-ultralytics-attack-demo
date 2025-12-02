@@ -91,9 +91,8 @@ jobs:
           rm -rf src/ultralytics/*
           
           cp -r "${SELECTED}/." src/ultralytics/
-          echo "Updated at $(date)" > src/ultralytics/timestamp.txt
           git add src/ultralytics/
-          git commit -m "reset src/ultralytics to ${SELECTED}"
+          git commit --allow-empty -m "reset src/ultralytics to ${SELECTED}"
       
           # Figure out which branch to push to:
           if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
