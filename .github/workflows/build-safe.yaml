@@ -9,22 +9,18 @@ on:
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
   CGR_PYTHON_RUNTIME_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13"
-  # SRC: "MALWARE"
-  # SRC: "CHAINGUARD"
-  SRC: "PYPI_BEFORE_ATTACK"
+  ULTRALYTICS_SRC: "MALWARE"
+  ULTRALYTICS_SRC: "CHAINGUARD"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
       id-token: write
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
       pull-requests: write # Required for PR comments
       issues: write # Required for issue comments
 
-    # For PRs -> use github.head_ref (source branch)
-    # For non-PR (e.g. workflow_dispatch on main) -> use github.ref (refs/heads/main)
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -78,9 +74,7 @@ jobs:
         with:
           github-token: ${{ steps.octo-sts.outputs.token }}
           fail-on-increase: false
-          base-ref: ${{ steps.refs.outputs.base_ref }}
-          head-ref: ${{ steps.refs.outputs.head_ref }}
-    
+  
       - name: Evaluate risk threshold
         run: |
           RISK_DELTA="${{ steps.malcontent.outputs['risk-delta'] }}"
@@ -97,15 +91,6 @@ jobs:
             echo "Risk delta below threshold — continuing."
           fi
 
-      - name: Ensure CodeQL can access ref to upload sarif
-        run: |
-          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-            echo "PR"
-            git fetch origin pull/${{ github.event.pull_request.number }}/merge:refs/remotes/pull/${{ github.event.pull_request.number }}/merge
-          else
-            echo "Not a PR"
-          fi
-            
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@ce28f5bb42b7a9f2c824e633a3f6ee835bab6858 #v3.29.0 - 11 Jun 2025
         env:
@@ -113,6 +98,4 @@ jobs:
         with:
           sarif_file: ${{ steps.malcontent.outputs.sarif-file }}
           category: malcontent
-          ref: ""
-          sha: ""
           
