@@ -100,27 +100,30 @@ jobs:
       - name: Select analysis directory and populate src/ultralytics
         id: pick-dir
         run: |
+
+        rm -rf src/ultralytics/*
+        mkdir -p src/ultralytics/
     
-          rm -rf src/ultralytics/*
-          mkdir -p src/ultralytics/
-
-          case "${ULTRALYTICS_SOURCE}" in
-            CHAINGUARD)
-              rsync -av --ignore-times vendored/ultralytics-before-attack/* src/ultralytics/
-              rsync -av --ignore-times vendored/ultralytics-chainguard/* src/ultralytics/
-              ;;
-
-            PYPI)
-              rsync -av --ignore-times vendored/ultralytics-before-attack/* src/ultralytics/
-              rsync -av --ignore-times vendored/malcontent-samples-ultralytics/v8.3.41/* src/ultralytics/
-              ;;
-            *)
-              echo "❌ Unknown ULTRALYTICS_SOURCE value: '${ULTRALYTICS_SOURCE}'"
-              echo "Valid values: PYPI, CHAINGUARD"
-              exit 1
-              ;;
-            esac
-
-            git add src/ultralytics/
-            git commit --allow-empty -m "reset src/ultralytics"
-            git push
+        case "${ULTRALYTICS_SOURCE}" in
+          CHAINGUARD)
+            # Community baseline + Chainguard libraries
+            rsync -av --ignore-times vendor/ultralytics-before-attack/* src/ultralytics/
+            rsync -av --ignore-times vendor/ultralytics-chainguard/* src/ultralytics/
+            ;;
+    
+          PYPI)
+            # Community baseline + malware payload
+            rsync -av --ignore-times vendor/ultralytics-before-attack/* src/ultralytics/
+            rsync -av --ignore-times vendor/malcontent-samples-ultralytics/v8.3.41/* src/ultralytics/
+            ;;
+    
+          *)
+            echo "❌ Unknown ULTRALYTICS_SOURCE value: '${ULTRALYTICS_SOURCE}'"
+            echo "Valid values: PYPI, CHAINGUARD"
+            exit 1
+            ;;
+        esac
+    
+        git add src/ultralytics/
+        git commit --allow-empty -m "reset src/ultralytics"
+        git push
