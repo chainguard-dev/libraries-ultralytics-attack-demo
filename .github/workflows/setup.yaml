@@ -43,7 +43,7 @@ jobs:
       
           case "${ULTRALYTICS_SOURCE}" in
             CHAINGUARD)
-              echo "Ultralytics src set to Chainguard"
+              echo "Ultralytics src set to Chainguard Libraries"
               rsync -av --ignore-times vendor/ultralytics-before-attack/* src/ultralytics/
               rsync -av --ignore-times vendor/ultralytics-chainguard/* src/ultralytics/
               ;;
