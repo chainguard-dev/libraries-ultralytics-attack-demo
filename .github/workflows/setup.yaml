@@ -106,13 +106,13 @@ jobs:
       
           case "${ULTRALYTICS_SOURCE}" in
             CHAINGUARD)
-              # Community baseline + Chainguard libraries
+              echo "Ultralytics src set to Chainguard"
               rsync -av --ignore-times vendor/ultralytics-before-attack/* src/ultralytics/
               rsync -av --ignore-times vendor/ultralytics-chainguard/* src/ultralytics/
               ;;
       
             PYPI)
-              # Community baseline + malware payload
+              echo "Ultralytics src set to PYPI"
               rsync -av --ignore-times vendor/ultralytics-before-attack/* src/ultralytics/
               rsync -av --ignore-times vendor/malcontent-samples-ultralytics/v8.3.41/* src/ultralytics/
               ;;
