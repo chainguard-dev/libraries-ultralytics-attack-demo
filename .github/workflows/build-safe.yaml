@@ -5,7 +5,7 @@ on:
   pull_request:
     branches:
       - main
-      
+
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
   CGR_PYTHON_RUNTIME_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13"
@@ -14,6 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
+      content: read
       id-token: write
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
       pull-requests: write # Required for PR comments
@@ -24,12 +25,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-        
-      - name: Setup Git
-        run: |
-          git config --global user.email "gha@users.noreply.github.com"
-          git config --global user.name "github-actions"
+          ref: ${{ github.ref }}
 
       - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f
         id: octo-sts
