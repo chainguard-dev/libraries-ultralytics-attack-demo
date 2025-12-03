@@ -48,7 +48,7 @@ jobs:
           mkdir -p src/ultralytics
           git add src/ultralytics/
           git commit --allow-empty -m "Cleared src/ultralytics due to EMPTY=YES"
-          git push origin HEAD:main
+          git push origin HEAD
 
       - name: Auth for Chainguard Libraries
         if: env.OVERWRITE_CHAINGUARD_LIBRARIES
@@ -77,7 +77,7 @@ jobs:
           
           git add vendor/ultralytics-chainguard/
           git commit -m "Vendored ultralytics from Chainguard Libraries"
-          git push origin HEAD:main
+          git push origin HEAD
      
       - name: populate ultralytics 8-3-39
         if: env.OVERWRITE_PYPI_BEFORE_ATTACK
@@ -96,7 +96,7 @@ jobs:
           
           git add vendor/ultralytics-before-attack
           git commit --allow-empty -m "Reset to community ultralytics v8.3.39 from GitHub"
-          git push origin HEAD:main
+          git push origin HEAD
   
       - name: Select analysis directory and populate src/ultralytics
         id: pick-dir
@@ -127,4 +127,4 @@ jobs:
       
           git add src/ultralytics/
           git commit --allow-empty -m "reset src/ultralytics"
-          git push
+          git push origin HEAD
