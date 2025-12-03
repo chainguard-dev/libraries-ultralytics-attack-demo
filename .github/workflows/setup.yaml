@@ -7,7 +7,7 @@ on:
     - '.github/workflows/setup.yaml'
   
 env:
-  ULTRALYTICS_SOURCE: "CHAINGUARD"
+  ULTRALYTICS_SOURCE: "PYPI"
   EMPTY: "false"
   OVERWRITE_CHAINGUARD_LIBRARIES: "false"
   OVERWRITE_PYPI_BEFORE_ATTACK: "false"
