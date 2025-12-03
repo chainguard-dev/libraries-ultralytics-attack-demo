@@ -9,8 +9,6 @@ on:
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
   CGR_PYTHON_RUNTIME_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13"
-  ULTRALYTICS_SRC: "MALWARE"
-  ULTRALYTICS_SRC: "CHAINGUARD"
 
 jobs:
   build:
