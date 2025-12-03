@@ -7,7 +7,7 @@ claim_pattern:
   job_workflow_ref: chainguard-dev/libraries-ultralytics-attack-demo/.github/workflows/build-safe.yaml@.*
 
 permissions:
-  contents: write
+  contents: read
   pull_requests: write
   issues: write
   workflows: write
