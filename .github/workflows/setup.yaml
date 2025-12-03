@@ -7,24 +7,27 @@ on:
     - '.github/workflows/setup.yaml'
   
 env:
-  EMPTY: true
-  OVERWRITE_CHAINGUARD_LIBRARIES: true
-  OVERWRITE_PYPI_BEFORE_ATTACK: true
-
+  ULTRALYTICS_SOURCE: "CHAINGUARD"
+  EMPTY: false
+  OVERWRITE_CHAINGUARD_LIBRARIES: false
+  OVERWRITE_PYPI_BEFORE_ATTACK: false
+  .
 jobs:
   setup:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       id-token: write
+      pull-requests: write # Required for PR comments
+      issues: write # Required for issue comments
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.ref }} #Current branch
           fetch-depth: 0
-
+          ref: ${{ github.ref }}
+        
       - name: Setup Git
         run: |
           git config --global user.email "gha@users.noreply.github.com"
