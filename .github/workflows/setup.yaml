@@ -7,10 +7,7 @@ on:
     - '.github/workflows/setup.yaml'
   
 env:
-  ULTRALYTICS_SOURCE: "CHAINGUARD"
-  EMPTY: "false"
-  OVERWRITE_CHAINGUARD_LIBRARIES: "false"
-  OVERWRITE_PYPI_BEFORE_ATTACK: "false"
+  ULTRALYTICS_SOURCE: "PYPI"
 
 jobs:
   setup:
@@ -18,8 +15,6 @@ jobs:
     permissions:
       contents: write
       id-token: write
-      pull-requests: write # Required for PR comments
-      issues: write # Required for issue comments
 
     steps:
       - name: Checkout code
@@ -39,65 +34,6 @@ jobs:
           scope: chainguard-dev/libraries-ultralytics-attack-demo
           identity: setup
       
-      - name: Clear contents of src/ultralytics
-        if: env.EMPTY == 'true'
-        run: |
-          echo "Clearing src/ultralytics/"
-          rm -rf src/ultralytics || true
-          git rm -r vendored/* || true
-          mkdir -p src/ultralytics
-          git add src/ultralytics/
-          git commit --allow-empty -m "Cleared src/ultralytics due to EMPTY=YES"
-          git push origin HEAD
-
-      - name: Auth for Chainguard Libraries
-        if: env.OVERWRITE_CHAINGUARD_LIBRARIES == 'true'
-        uses: chainguard-dev/setup-chainctl@be0acd273acf04bfdf91f51198327e719f6af978 #v0.4.0
-        with:
-          identity: "4cf15780a13a9b6576d8b357e6524554c8c12a18/aab27dc39ad870c9"
-
-      - name: Vendor from CHAINGUARD_LIBRARIES
-        if: env.OVERWRITE_CHAINGUARD_LIBRARIES == 'true'
-        run: |
-          echo "Vendoring ultralytics from Chainguard Libraries..."
-          
-          mkdir -p tmp_wheels tmp_unzip
-          
-          eval $(chainctl auth pull-token --library-ecosystem=python --parent=cgr-demo.com --ttl=1m --output=env)
-          
-          curl -L --user "$CHAINGUARD_PYTHON_IDENTITY_ID:$CHAINGUARD_PYTHON_TOKEN" \
-            -o tmp_wheels/ultralytics-8.3.40-py3-none-any.whl \
-            https://libraries.cgr.dev/python/files/15f7d141c3b76b85/37e321caa85a8f41/ultralytics/ultralytics-8.3.40-py3-none-any.whl#sha256=b2b05c4c61b6a93fb4c7c052c47cd6c30ab7915131dee70a862da1a09acf3d85
-      
-          unzip tmp_wheels/ultralytics-8.3.40-py3-none-any.whl -d tmp_unzip      
-          rm -rf vendor/ultralytics-chainguard || true
-          mkdir -p vendor/ultralytics-chainguard
-          mv tmp_unzip/ultralytics/* vendor/ultralytics-chainguard/
-          rm -rf tmp_wheels tmp_unzip
-          
-          git add vendor/ultralytics-chainguard/
-          git commit -m "Vendored ultralytics from Chainguard Libraries"
-          git push origin HEAD
-     
-      - name: populate ultralytics 8-3-39
-        if: env.OVERWRITE_PYPI_BEFORE_ATTACK == 'true'
-        run: |
-
-          echo "Resetting vendor/ultralytics-before-attack to community ultralytics v8.3.39 from GitHub"          
-          mkdir -p tmp_wheels tmp_unzip
-          curl -L -o tmp_wheels/ultralytics-8.3.39-py3-none-any.whl \
-          https://files.pythonhosted.org/packages/e7/66/3c3fd38fc2350b5c376bcfc44fa682dc4282d39856d3dfc54679a8bcec7e/ultralytics-8.3.39-py3-none-any.whl
-          rm -rf vendor/ultralytics-before-attack || true
-          mkdir -p vendor/ultralytics-before-attack
-
-          unzip tmp_wheels/ultralytics-8.3.39-py3-none-any.whl -d tmp_unzip
-          mv tmp_unzip/ultralytics/* vendor/ultralytics-before-attack/
-          rm -rf tmp_wheels tmp_unzip
-          
-          git add vendor/ultralytics-before-attack
-          git commit --allow-empty -m "Reset to community ultralytics v8.3.39 from GitHub"
-          git push origin HEAD
-  
       - name: Select analysis directory and populate src/ultralytics
         id: pick-dir
         run: |

@@ -4,7 +4,7 @@
 issuer: https://token.actions.githubusercontent.com
 subject_pattern: repo:chainguard-dev/libraries-ultralytics-attack-demo:.*
 claim_pattern:
-  job_workflow_ref: chainguard-dev/libraries-ultralytics-attack-demo/.github/workflows/s.yaml@.*
+  job_workflow_ref: chainguard-dev/libraries-ultralytics-attack-demo/.github/workflows/vendor-libraries.yaml@.*
 
 permissions:
   contents: write
