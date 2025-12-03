@@ -44,7 +44,6 @@ jobs:
         run: |
           echo "Clearing src/ultralytics/"
           rm -rf src/ultralytics || true
-          git mv vendored/malcontent-samples-ultralytics/ vendor/malcontent-samples-ultralytics/ 
           git rm -r vendored/* || true
           mkdir -p src/ultralytics
           git add src/ultralytics/
