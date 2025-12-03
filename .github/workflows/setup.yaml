@@ -8,9 +8,8 @@ on:
   
 env:
   EMPTY: true
-  MALCONTENT_SAMPLES_PYPI: true
-  CHAINGUARD_LIBRARIES: true
-  PYPI_BEFORE_ATTACK: true
+  OVERWRITE_CHAINGUARD_LIBRARIES: true
+  OVERWRITE_PYPI_BEFORE_ATTACK: true
 
 jobs:
   setup:
@@ -46,25 +45,15 @@ jobs:
           git add src/ultralytics/
           git commit --allow-empty -m "Cleared src/ultralytics due to EMPTY=YES"
           git push origin HEAD:main
-          
-      - name: Vendor from MALCONTENT_SAMPLES_PYPI
-        if: env.MALCONTENT_SAMPLES_PYPI
-        run: |
-          echo "Vendoring from malcontent-samples-ultralytics..."
-          mkdir -p src/ultralytics-malware
-          cp -pr malcontent-samples-ultralytics/v8.3.40/* src/ultralytics-malware/
-          git add src/ultralytics-malware/
-          git commit --allow-empty -m "Vendored ultralytics from malcontent-samples"
-          git push origin HEAD:main
 
       - name: Auth for Chainguard Libraries
-        if: env.CHAINGUARD_LIBRARIES
+        if: env.OVERWRITE_CHAINGUARD_LIBRARIES
         uses: chainguard-dev/setup-chainctl@be0acd273acf04bfdf91f51198327e719f6af978 #v0.4.0
         with:
           identity: "4cf15780a13a9b6576d8b357e6524554c8c12a18/aab27dc39ad870c9"
 
       - name: Vendor from CHAINGUARD_LIBRARIES
-        if: env.CHAINGUARD_LIBRARIES
+        if: env.OVERWRITE_CHAINGUARD_LIBRARIES
         run: |
           echo "Vendoring ultralytics from Chainguard Libraries..."
           
@@ -77,31 +66,31 @@ jobs:
             https://libraries.cgr.dev/python/files/15f7d141c3b76b85/37e321caa85a8f41/ultralytics/ultralytics-8.3.40-py3-none-any.whl#sha256=b2b05c4c61b6a93fb4c7c052c47cd6c30ab7915131dee70a862da1a09acf3d85
       
           unzip tmp_wheels/ultralytics-8.3.40-py3-none-any.whl -d tmp_unzip      
-          rm -rf src/ultralytics-chainguard || true
-          mkdir -p src/ultralytics-chainguard
-          mv tmp_unzip/ultralytics/* src/ultralytics-chainguard/
+          rm -rf vendor/ultralytics-chainguard || true
+          mkdir -p vendor/ultralytics-chainguard
+          mv tmp_unzip/ultralytics/* vendor/ultralytics-chainguard/
           rm -rf tmp_wheels tmp_unzip
           
-          git add src/ultralytics-chainguard/
+          git add vendor/ultralytics-chainguard/
           git commit -m "Vendored ultralytics from Chainguard Libraries"
           git push origin HEAD:main
 
       - name: populate ultralytics 8-3-39
-        if: env.PYPI_BEFORE_ATTACK
+        if: env.OVERWRITE_PYPI_BEFORE_ATTACK
         run: |
 
-          echo "Resetting src/ultralytics to community ultralytics v8.3.39 from GitHub"          
+          echo "Resetting vendor/ultralytics-before-attack to community ultralytics v8.3.39 from GitHub"          
           mkdir -p tmp_wheels tmp_unzip
           curl -L -o tmp_wheels/ultralytics-8.3.39-py3-none-any.whl \
           https://files.pythonhosted.org/packages/e7/66/3c3fd38fc2350b5c376bcfc44fa682dc4282d39856d3dfc54679a8bcec7e/ultralytics-8.3.39-py3-none-any.whl
-          rm -rf src/ultralytics-before-attack || true
-          mkdir -p src/ultralytics-before-attack
+          rm -rf vendor/ultralytics-before-attack || true
+          mkdir -p vendor/ultralytics-before-attack
 
           unzip tmp_wheels/ultralytics-8.3.39-py3-none-any.whl -d tmp_unzip
-          mv tmp_unzip/ultralytics/* src/ultralytics-before-attack/
+          mv tmp_unzip/ultralytics/* vendor/ultralytics-before-attack/
           rm -rf tmp_wheels tmp_unzip
           
-          git add src/ultralytics-before-attack
+          git add vendor/ultralytics-before-attack
           git commit --allow-empty -m "Reset to community ultralytics v8.3.39 from GitHub"
           git push origin HEAD:main
 
