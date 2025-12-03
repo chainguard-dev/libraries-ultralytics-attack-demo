@@ -2,9 +2,6 @@ name: vendor-libraries
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-    - '.github/workflows/setup.yaml'
   
 env:
   CLEAR_SRC_ULTRALYTICS: "false"
