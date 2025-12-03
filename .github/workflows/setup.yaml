@@ -11,7 +11,7 @@ env:
   EMPTY: false
   OVERWRITE_CHAINGUARD_LIBRARIES: false
   OVERWRITE_PYPI_BEFORE_ATTACK: false
-  .
+
 jobs:
   setup:
     runs-on: ubuntu-latest
