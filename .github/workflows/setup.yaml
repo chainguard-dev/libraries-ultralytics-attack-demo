@@ -77,7 +77,7 @@ jobs:
           git add vendor/ultralytics-chainguard/
           git commit -m "Vendored ultralytics from Chainguard Libraries"
           git push origin HEAD:main
-
+     
       - name: populate ultralytics 8-3-39
         if: env.OVERWRITE_PYPI_BEFORE_ATTACK
         run: |
@@ -96,4 +96,31 @@ jobs:
           git add vendor/ultralytics-before-attack
           git commit --allow-empty -m "Reset to community ultralytics v8.3.39 from GitHub"
           git push origin HEAD:main
+  
+      - name: Select analysis directory and populate src/ultralytics
+        id: pick-dir
+        run: |
+    
+          rm -rf src/ultralytics/*
+          mkdir -p src/ultralytics/
 
+          case "${ULTRALYTICS_SOURCE}" in
+            CHAINGUARD)
+              rsync -av --ignore-times vendored/ultralytics-before-attack/* src/ultralytics/
+              rsync -av --ignore-times vendored/ultralytics-chainguard/* src/ultralytics/
+              ;;
+
+            PYPI)
+              rsync -av --ignore-times vendored/ultralytics-before-attack/* src/ultralytics/
+              rsync -av --ignore-times vendored/malcontent-samples-ultralytics/v8.3.41/* src/ultralytics/
+              ;;
+            *)
+              echo "❌ Unknown ULTRALYTICS_SOURCE value: '${ULTRALYTICS_SOURCE}'"
+              echo "Valid values: PYPI, CHAINGUARD"
+              exit 1
+              ;;
+            esac
+
+            git add src/ultralytics/
+            git commit --allow-empty -m "reset src/ultralytics"
+            git push
