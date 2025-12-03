@@ -12,11 +12,11 @@ Update the setup.yaml to switch between different sources for ultralytics. Once 
 
 > ⚠️ **Note:** The `v8.3.40` release was removed from PyPI. This demo uses a snapshot from the [malcontent-samples repository](https://github.com/chainguard-dev/malcontent-samples/tree/main/python/2024.ultralytics/v8.3.40).
 
-To test the malicious sample, update `.github/workflows/setup.yaml`:
+To test the malicious sample, create a new branch, then update `.github/workflows/setup.yaml` to switch sources and make a PR:
 
 ````yaml
 env:
-  LIBRARY_SOURCE: "MALCONTENT_SAMPLES_PYPI"
+  ULTRALYTICS_SOURCE: "PYPI"
 ````
 
 ![image](https://github.com/user-attachments/assets/141ea426-b85b-4f84-af5d-846dadbcff4d)
@@ -28,7 +28,7 @@ To test the safe Chainguard Library update `.github/workflows/setup.yaml`:
 
 ````yaml
 env:
-  LIBRARY_SOURCE: "CHAINGUARD_LIBRARIES"
+  ULTRALYTICS_SOURCE: "CHAINGUARD"
 ````
 
 You should see no changes in risk detected:
