@@ -8,7 +8,7 @@ on:
   
 env:
   ULTRALYTICS_SOURCE: "CHAINGUARD"
-  EMPTY: false
+  EMPTY: true
   OVERWRITE_CHAINGUARD_LIBRARIES: false
   OVERWRITE_PYPI_BEFORE_ATTACK: false
 
@@ -44,6 +44,7 @@ jobs:
         run: |
           echo "Clearing src/ultralytics/"
           rm -rf src/ultralytics || true
+          mv vendored/malcontent-samples-ultralytics/ vendor/malcontent-samples-ultralytics/ 
           mkdir -p src/ultralytics
           git add src/ultralytics/
           git commit --allow-empty -m "Cleared src/ultralytics due to EMPTY=YES"
