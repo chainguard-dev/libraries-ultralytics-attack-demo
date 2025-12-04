@@ -11,3 +11,4 @@ permissions:
   pull_requests: write
   issues: write
   workflows: write
+  security-events: write
