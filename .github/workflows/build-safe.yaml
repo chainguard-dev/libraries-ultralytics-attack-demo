@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
-    types: [ opened, reopened, synchronize ]
+    types: [ opened, reopened, synchronize, ready_for_review ]
   pull_request:
     branches: [ main ]
-    types: [ opened, reopened, synchronize ]
+    types: [ opened, reopened, synchronize, ready_for_review ]
 
 env:
   CGR_PYTHON_BUILDER_IMAGE_NAME: "cgr.dev/cgr-demo.com/python:3.13-dev"
