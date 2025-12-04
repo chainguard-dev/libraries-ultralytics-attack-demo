@@ -91,6 +91,7 @@ jobs:
 
       - name: Evaluate risk threshold
         run: |
+          echo "SARIF: ${{ steps.malcontent.outputs.sarif-file }}"
           RISK_DELTA="${{ steps.malcontent.outputs['risk-delta'] }}"
           echo "Risk delta: $RISK_DELTA"
       
