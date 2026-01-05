@@ -57,6 +57,10 @@ jobs:
         with:
           identity: "4cf15780a13a9b6576d8b357e6524554c8c12a18/aab27dc39ad870c9"
 
+      - name: Install cosign for chainctl libraries verify
+        if: env.OVERWRITE_CHAINGUARD_LIBRARIES == 'true'
+        uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad #v4.0.0
+      
       - name: Verify Chainguard Library from CHAINGUARD_LIBRARIES
         if: env.OVERWRITE_CHAINGUARD_LIBRARIES == 'true'
         run: |
