@@ -67,7 +67,7 @@ jobs:
           mkdir -p tmp_wheels tmp_unzip          
           eval $(chainctl auth pull-token --repository=python --parent=cgr-demo.com --ttl=1m --output=env)          
           curl -L --user "$CHAINGUARD_PYTHON_IDENTITY_ID:$CHAINGUARD_PYTHON_TOKEN" \
-            -o tmp_wheels/ultralytics-8.3.40-py3-none-any.whl \
+            -o tmp_wheels/ultralytics-8.3.40-py3-none-any.whl
           chainctl libraries verify tmp_wheels/ultralytics-8.3.40-py3-none-any.whl
             
       - name: Vendor from CHAINGUARD_LIBRARIES
