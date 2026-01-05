@@ -82,6 +82,12 @@ jobs:
           rm -rf tmp_wheels tmp_unzip
           
           git add vendor/ultralytics-chainguard/
+          
+          if git diff --cached --quiet; then
+            echo "No changes detected in vendor/ultralytics-chainguard — skipping commit"
+            exit 0
+          fi
+          
           git commit -m "Vendored ultralytics from Chainguard Libraries"
           git push origin HEAD
      
