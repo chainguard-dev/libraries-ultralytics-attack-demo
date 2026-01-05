@@ -5,7 +5,7 @@ on:
   
 env:
   CLEAR_SRC_ULTRALYTICS: "false"
-  OVERWRITE_CHAINGUARD_LIBRARIES: "false"
+  OVERWRITE_CHAINGUARD_LIBRARIES: "true"
   OVERWRITE_PYPI_BEFORE_ATTACK: "false"
 
 permissions: {}
