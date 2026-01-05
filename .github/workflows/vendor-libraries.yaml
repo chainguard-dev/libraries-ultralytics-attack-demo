@@ -60,20 +60,21 @@ jobs:
       - name: Verify Chainguard Library from CHAINGUARD_LIBRARIES
         if: env.OVERWRITE_CHAINGUARD_LIBRARIES == 'true'
         run: |
-          set -euo pipefail
           
-          echo "Verifying ultralytics from Chainguard Libraries..."
-          
-          mkdir -p tmp_wheels tmp_unzip          
+          set -euo pipefail          
+          echo "Verifying ultralytics from Chainguard Libraries..."          
+          mkdir -p tmp_wheels tmp_unzip
           eval $(chainctl auth pull-token --repository=python --parent=cgr-demo.com --ttl=1m --output=env)          
           curl -L --user "$CHAINGUARD_PYTHON_IDENTITY_ID:$CHAINGUARD_PYTHON_TOKEN" \
-            -o tmp_wheels/ultralytics-8.3.40-py3-none-any.whl
+            -o tmp_wheels/ultralytics-8.3.40-py3-none-any.whl \
+            https://libraries.cgr.dev/python/files/15f7d141c3b76b85/37e321caa85a8f41/ultralytics/ultralytics-8.3.40-py3-none-any.whl#sha256=b2b05c4c61b6a93fb4c7c052c47cd6c30ab7915131dee70a862da1a09acf3d85
           chainctl libraries verify tmp_wheels/ultralytics-8.3.40-py3-none-any.whl
             
       - name: Vendor from CHAINGUARD_LIBRARIES
         if: env.OVERWRITE_CHAINGUARD_LIBRARIES == 'true'
         run: |
-          
+
+          echo "Vendoring ultralytics from Chainguard Libraries..."
           unzip tmp_wheels/ultralytics-8.3.40-py3-none-any.whl -d tmp_unzip      
           rm -rf vendor/ultralytics-chainguard || true
           mkdir -p vendor/ultralytics-chainguard
